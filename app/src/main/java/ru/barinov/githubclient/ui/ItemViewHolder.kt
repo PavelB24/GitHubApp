@@ -1,4 +1,4 @@
-package ru.barinov.githubclient
+package ru.barinov.githubclient.ui
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

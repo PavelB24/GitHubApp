@@ -1,6 +1,6 @@
-package ru.barinov.githubclient
+package ru.barinov.githubclient.data
 
-data class GitUserEntity(
+data class LoadedProfileEntity(
     val avatar_url: String,
     val bio: String,
     val blog: String,
