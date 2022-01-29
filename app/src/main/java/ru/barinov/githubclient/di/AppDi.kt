@@ -4,7 +4,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.barinov.githubclient.data.*
 import ru.barinov.githubclient.domain.GitHubLoader
-import ru.barinov.githubclient.ui.HomeFragmentViewModel
+import ru.barinov.githubclient.ui.*
 
 val appModule = module {
 
@@ -24,5 +24,9 @@ val appModule = module {
 
     viewModel<HomeFragmentViewModel>{
         HomeFragmentViewModel(get(), get(), get())
+    }
+
+    viewModel<ProfileDetailsFragmentViewModel>{
+        ProfileDetailsFragmentViewModel(get(), get())
     }
 }

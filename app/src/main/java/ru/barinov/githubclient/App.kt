@@ -8,7 +8,6 @@ import org.koin.core.logger.Level
 class App: Application() {
 
 
-
     override fun onCreate() {
         startKoin {
             androidLogger(Level.ERROR)
