@@ -38,13 +38,15 @@ class ProfileDetailsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ProfileDetailLayoutBinding.inflate(inflater)
+        binding = ProfileDetailLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding.repositoriesRecyclerView.adapter = adapter
+
+        binding.loginTextView.text = login
 
         viewModel.getData(login!!)
 
