@@ -10,4 +10,9 @@ interface GitHubApi {
     fun loadUserByName(
         @Path("userName") userName: String,
     ): Call<LoadedProfileEntity>
+
+    @GET("/users/{userName}/repos")
+    fun loadUsersRepositories(
+        @Path("userName") userName: String,
+    ): Call<List<GitHubRepoEntity>>
 }

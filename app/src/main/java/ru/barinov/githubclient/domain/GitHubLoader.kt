@@ -36,4 +36,26 @@ class GitHubLoader {
 
         })
     }
+
+    fun loadUserRepositoriesAsync(
+        userName: String,
+        callback: (gitHubRepoEntity: List<GitHubRepoEntity>?) -> Unit
+    ){
+        api.loadUsersRepositories(userName).enqueue(object: Callback<List<GitHubRepoEntity>>{
+            override fun onResponse(
+                call: Call<List<GitHubRepoEntity>>,
+                response: Response<List<GitHubRepoEntity>>
+            ) {
+               callback.invoke(response.body())
+            }
+
+            override fun onFailure(
+                call: Call<List<GitHubRepoEntity>>,
+                t: Throwable) {
+                callback.invoke(null)
+            }
+
+        }
+        )
+    }
 }
