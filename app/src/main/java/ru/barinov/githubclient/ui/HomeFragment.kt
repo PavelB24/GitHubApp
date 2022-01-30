@@ -30,22 +30,18 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.dataLoadedLiveDataSearch.observe(viewLifecycleOwner) { responseEvent ->
-            var searchResponse: DataSearchResponse? = null
             responseEvent.getContentIfNotHandled()?.let { responseEvent ->
-                searchResponse = responseEvent
-            }
-            if (searchResponse != null) {
-                if (searchResponse!!.isSuccess) {
-                    Log.d("@@@@", "onViewCreated: suc")
-                    parentFragmentManager.beginTransaction().replace(
+                parentFragmentManager.beginTransaction().replace(
                         (requireActivity() as MainActivity).binding.mainContainerForFragments.id,
-                        ProfileDetailsFragment.getNewInstance(searchResponse!!.login)
+                        ProfileDetailsFragment.getNewInstance(responseEvent)
                     ).addToBackStack(null).commit()
-                } else if (!searchResponse!!.isSuccess) {
-                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
-                }
+            }
+            super.onViewCreated(view, savedInstanceState)
+        }
+        viewModel.onErrorLiveData.observe(viewLifecycleOwner){errorEvent->
+            errorEvent.getContentIfNotHandled()?.let {
+                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
             }
         }
-        super.onViewCreated(view, savedInstanceState)
     }
 }

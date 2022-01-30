@@ -5,7 +5,6 @@ import ru.barinov.githubclient.domain.GitHubRepoEntity
 
 data class DataDetailResponse(
     val repositories: List<GitHubRepoEntity>,
-    val profile :LoadedProfileEntity,
-    val isSuccess: Boolean
+    val profile :LoadedProfileEntity?,
     )
 

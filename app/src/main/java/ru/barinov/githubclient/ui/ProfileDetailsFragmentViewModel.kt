@@ -2,6 +2,9 @@ package ru.barinov.githubclient.ui
 
 import android.util.Log
 import androidx.lifecycle.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.barinov.githubclient.data.*
 import ru.barinov.githubclient.domain.*
 import java.io.IOException
@@ -15,27 +18,21 @@ class ProfileDetailsFragmentViewModel(
     private val _dataLoadedLiveData = MutableLiveData<DataDetailResponse>()
     val dataLoadedLiveDataSearch: LiveData<DataDetailResponse> = _dataLoadedLiveData
 
-    fun getData(login: String) {
-        var repositoriesList = emptyList<GitHubRepoEntity>()
-        try {
-        loader.loadUserRepositoriesAsync(login) { list ->
-            if (list != null) {
-                repositoriesList = list
-                _dataLoadedLiveData.postValue(
-                    DataDetailResponse(
-                        repositoriesList, cacheRepository.getProfileByLogin(login)!!, true
-                    )
-                )
-            } else {
-                _dataLoadedLiveData.postValue(
-                    DataDetailResponse(
-                        repositoriesList, cacheRepository.getProfileByLogin(login)!!, false
-                    )
-                )
-            }
-        }
-    } catch (e: IOException){
+    private val _onErrorLiveData = MutableLiveData<Event<Unit>>()
+    val onErrorLiveData: LiveData<Event<Unit>> = _onErrorLiveData
 
-    }
+    fun getData(login: String) {
+        loader.loadUserRepositoriesAsync(login)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onError = {
+                    _onErrorLiveData.postValue(Event(Unit))
+                },
+                onNext = { list ->
+                    _dataLoadedLiveData.postValue(DataDetailResponse(list, cacheRepository.getProfileByLogin(login)))
+                }
+            )
+
     }
 }

@@ -1,9 +1,11 @@
 package ru.barinov.githubclient.ui
 
 import androidx.lifecycle.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.barinov.githubclient.data.*
 import ru.barinov.githubclient.domain.*
-import java.io.IOException
 
 class HomeFragmentViewModel(
     private val loader: GitHubLoader,
@@ -14,32 +16,34 @@ class HomeFragmentViewModel(
     private val _createdAdapterLiveData = MutableLiveData<ProfilesRecyclerViewAdapter>()
     val createdAdapterLiveData: LiveData<ProfilesRecyclerViewAdapter> = _createdAdapterLiveData
 
-    private val _dataLoadedLiveData = MutableLiveData<Event<DataSearchResponse>>()
-    val dataLoadedLiveDataSearch: LiveData<Event<DataSearchResponse>> = _dataLoadedLiveData
+    private val _dataLoadedLiveData = MutableLiveData<Event<String>>()
+    val dataLoadedLiveDataSearch: LiveData<Event<String>> = _dataLoadedLiveData
+
+    private val _onErrorLiveData = MutableLiveData<Event<Unit>>()
+    val onErrorLiveData: LiveData<Event<Unit>> = _onErrorLiveData
 
     fun getUserNames(adapterProfiles: ProfilesRecyclerViewAdapter) {
         adapterProfiles.setItems(repository.getList())
-        adapterProfiles.setListener(implementListener())
+        adapterProfiles.setListener(sendListener())
         _createdAdapterLiveData.value = adapterProfiles
 
     }
 
-    private fun implementListener(): OnItemClickListener {
+    private fun sendListener(): OnItemClickListener {
         return object : OnItemClickListener {
             override fun onItemClick(user: GitHubUser) {
-                try {
+                loader.loadUserEntityAsync(user.name)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                        onError = {
+                        _onErrorLiveData.postValue(Event(Unit))
+                    },
+                        onNext = { profile ->
+                        cacheRepository.loadedEntityCache.add(profile)
+                        _dataLoadedLiveData.postValue(Event(profile.login))
+                    })
 
-                    loader.loadUserEntityAsync(user.name) { profile ->
-                        if (profile != null) {
-                            cacheRepository.loadedEntityCache.add(profile)
-                            _dataLoadedLiveData.postValue(Event(DataSearchResponse(user.name, true)))
-                        } else {
-                            _dataLoadedLiveData.postValue(Event(DataSearchResponse(user.name, false)))
-                        }
-                    }
-                } catch (e: IOException){
-
-                }
             }
         }
     }

@@ -51,14 +51,9 @@ class ProfileDetailsFragment: Fragment() {
         viewModel.getData(login!!)
 
         viewModel.dataLoadedLiveDataSearch.observe(viewLifecycleOwner){ response->
-            if (response.isSuccess){
                 Log.d("@@@@", response.repositories.size.toString() + " aaaa")
-                Glide.with(this).load(response.profile.avatar_url).into(binding.profileImageView)
+                Glide.with(this).load(response.profile!!.avatar_url).into(binding.profileImageView)
                 adapter.setItems(response.repositories)
-            } else{
-                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
-            }
-
         }
 
         super.onViewCreated(view, savedInstanceState)
