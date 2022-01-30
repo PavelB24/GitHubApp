@@ -40,9 +40,9 @@ class HomeFragmentViewModel(
                         onError = {
                         _onErrorLiveData.postValue(Event(Unit))
                     },
-                        onSuccess = {
-                        cacheRepository.loadedEntityCache.add(it)
-                        _dataLoadedLiveData.postValue(Event(it.login))
+                        onSuccess = { profile ->
+                        cacheRepository.loadedEntityCache.add(profile)
+                        _dataLoadedLiveData.postValue(Event(profile.login))
                     })
 
             }
