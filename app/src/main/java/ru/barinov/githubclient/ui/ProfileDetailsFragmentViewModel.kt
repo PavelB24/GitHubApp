@@ -29,7 +29,7 @@ class ProfileDetailsFragmentViewModel(
                 onError = {
                     _onErrorLiveData.postValue(Event(Unit))
                 },
-                onNext = { list ->
+                onSuccess = { list ->
                     _dataLoadedLiveData.postValue(DataDetailResponse(list, cacheRepository.getProfileByLogin(login)))
                 }
             )

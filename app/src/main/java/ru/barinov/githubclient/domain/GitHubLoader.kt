@@ -1,7 +1,7 @@
 package ru.barinov.githubclient.domain
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.*
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.barinov.githubclient.data.LoadedProfileEntity
@@ -22,7 +22,7 @@ class GitHubLoader {
 
     fun loadUserEntityAsync(
         userName: String
-    ): Observable<LoadedProfileEntity> {
+    ): Single<LoadedProfileEntity> {
         return api.loadUserByName(userName)
         
     }
@@ -32,7 +32,7 @@ class GitHubLoader {
 
     fun loadUserRepositoriesAsync(
         userName: String
-    ): Observable<List<GitHubRepoEntity>>
+    ): Single<List<GitHubRepoEntity>>
     {
         return api.loadUsersRepositories(userName)
     }

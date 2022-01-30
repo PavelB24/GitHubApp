@@ -2,6 +2,7 @@ package ru.barinov.githubclient.ui
 
 import androidx.lifecycle.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.barinov.githubclient.data.*
@@ -39,9 +40,9 @@ class HomeFragmentViewModel(
                         onError = {
                         _onErrorLiveData.postValue(Event(Unit))
                     },
-                        onNext = { profile ->
-                        cacheRepository.loadedEntityCache.add(profile)
-                        _dataLoadedLiveData.postValue(Event(profile.login))
+                        onSuccess = {
+                        cacheRepository.loadedEntityCache.add(it)
+                        _dataLoadedLiveData.postValue(Event(it.login))
                     })
 
             }
