@@ -7,11 +7,11 @@ import ru.barinov.githubclient.databinding.RecyclerViewItemBinding
 import ru.barinov.githubclient.domain.OnItemClickListener
 import ru.barinov.githubclient.ui.ItemViewHolder
 
-class RecyclerViewAdapter : RecyclerView.Adapter<ItemViewHolder>() {
+class ProfilesRecyclerViewAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
     private var itemList = emptyList<GitHubUser>()
 
-    private var listener: OnItemClickListener? = null
+    private lateinit var listener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
 
@@ -27,7 +27,7 @@ class RecyclerViewAdapter : RecyclerView.Adapter<ItemViewHolder>() {
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
         holder.nameTextView.text = item.name
-        holder.itemView.setOnClickListener { listener }
+        holder.itemView.setOnClickListener { listener.onItemClick(item) }
     }
 
     override fun getItemCount(): Int {
